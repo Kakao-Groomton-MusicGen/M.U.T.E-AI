@@ -9,7 +9,7 @@ def set_openai_api_key():
     api_key = os.getenv("OPENAI_API_KEY")
     
     if not api_key:
-        raise ValueError("OPENAI_API_KEY가 config.env 파일에 설정되어 있지 않습니다.")
+        raise ValueError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
     
     client = OpenAI(api_key=api_key)
     return client
@@ -18,7 +18,7 @@ def set_openai_api_key():
 def send_prompt_to_openai(client, prompt):
     """주어진 프롬프트로 OpenAI API 호출"""
     response = client.chat.completions.create(
-        model='gpt-4o-mini',
+        model='gpt-4',
         messages=[
             {"role": "system", "content": "If you receive a keyword, we will create song lyrics corresponding to it. Please write lyrics according to the song length of 30 seconds to 1 minute."},
             {"role": "user", "content": prompt}

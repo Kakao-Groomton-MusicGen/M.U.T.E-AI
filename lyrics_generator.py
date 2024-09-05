@@ -1,11 +1,10 @@
 import time
-import tiktoken
 from openai_client import set_openai_api_key, send_prompt_to_openai
 
 # 동요 가사 생성 함수
 def generate_lyrics(keyword):
     """OpenAI API를 통해 가사를 생성"""
-    client = set_openai_api_key()  # API 키는 openai_client.py에서 자동으로 불러옴
+    client = set_openai_api_key()  # OpenAI API 클라이언트 불러오기
     
     start = time.time()
     prompt = f"""
@@ -16,7 +15,10 @@ def generate_lyrics(keyword):
     [Outro]
     """
     
+    # OpenAI를 통해 가사 생성
     lyrics = send_prompt_to_openai(client, prompt)
+    
+    # 가사 정리
     split_lyrics = lyrics.split('\n')
     cleaned_lyrics = ' '.join(''.join(split_lyrics).split())
     
