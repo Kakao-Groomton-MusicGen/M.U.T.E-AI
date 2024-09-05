@@ -8,17 +8,17 @@ def generate_lyrics(keyword):
     
     start = time.time()
     prompt = f"""
-    키워드 {keyword}에 관련된 동요 가사를 만들어줘.
-    한글 가사, 노래의 장르는 동요, 노래의 길이는 30초~1분 정도 길이로 부탁해.
-    [Verse]
-    [Chorus]
-    [Outro]
+    키워드: {keyword}
+
+    이 키워드를 바탕으로 가사를 작성해줘. [Verse], [Chorus], [Outro] 형식으로 부탁해.
+    노래의 장르는 동요고, 노래 길이 30초에서 1분정도에 맞춰서 가사를 작성해줘.
     """
     
     # OpenAI를 통해 가사 생성
     lyrics = send_prompt_to_openai(client, prompt)
     
     # 가사 정리
+    lyrics = lyrics.replace('*', '')
     split_lyrics = lyrics.split('\n')
     cleaned_lyrics = ' '.join(''.join(split_lyrics).split())
     

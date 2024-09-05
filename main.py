@@ -10,7 +10,7 @@ if __name__ == "__main__":
     print("생성된 가사:\n", lyrics)
     
     # 3. 태그 및 제목 정의 (필요한 경우 변경 가능)
-    tags = "동요, 유아, 키즈"
+    tags = "Children's song, Kids"
     title = f"{keyword}에 관한 노래"
     
     # 4. 생성된 가사를 통해 음악을 생성하고 URL을 받아옴
