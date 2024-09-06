@@ -6,3 +6,4 @@ flask
 boto3
 wheel
 gunicorn
+validators
