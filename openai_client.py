@@ -1,3 +1,4 @@
+# openai_client.py
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -52,7 +53,7 @@ def get_translation_from_openai(client, tag):
         model='gpt-4o-mini',
         messages=[
             {"role": "system", "content": system_content},
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": tag}
         ],
         max_tokens=512,
         temperature=0.5,
