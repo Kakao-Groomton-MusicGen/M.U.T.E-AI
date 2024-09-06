@@ -4,3 +4,5 @@ tiktoken
 python-dotenv
 flask
 boto3
+wheel
+gunicorn
