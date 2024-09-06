@@ -45,7 +45,7 @@ def get_translation_from_openai(client, tag):
     system_content = """
     You are a professional translator specializing in music genres. The user will provide one or more music genres in Korean, and your task is to translate them into the correct English terms. If more than one genre is provided, separate each translated genre with a comma. Make sure to use the most widely recognized English term for each genre, preserving its original meaning and context.
 
-    If the genre name in Korean is already widely used in English or doesn't have a direct translation, maintain the original term. Provide a brief explanation if necessary.
+    If the genre name in Korean is already widely used in English or doesn't have a direct translation, maintain the original term.
     """
 
     response = client.chat.completions.create(
