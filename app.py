@@ -29,8 +29,12 @@ def generate_song():
     style_translated = tag_translation(style)  # 태그(스타일) 번역
     
     # 오디오 생성 및 URL 반환
-    audio_urls = generate_and_get_audio(keywords, style_translated, title)
-    
+    try:
+        audio_urls = generate_and_get_audio(keywords, style_translated, title)
+    except Exception as e:
+        print(f"오디오 생성 중 에러 발생: {e}")
+        return jsonify({"error": "오디오 생성 중 문제가 발생했습니다."}), 500
+
     if not audio_urls:
         return jsonify({"error": "오디오 생성 실패"}), 500
     
