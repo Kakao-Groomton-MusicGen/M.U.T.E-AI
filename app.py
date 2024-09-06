@@ -1,28 +1,35 @@
-from flask import Flask, request, jsonify
+# app.py
+from flask import Flask, request, jsonify, send_file, Response
 from audio_client import generate_and_get_audio  # 오디오 생성 함수 임포트
 from lyrics_generator import lyrics_composition, tag_translation
 from music_uploader import upload_music
 from werkzeug.utils import secure_filename
+import os
+from config import BASE_URL, SWAGGER_URL
 
 app = Flask(__name__)
+
+# BASE_URL과 SWAGGER_URL 확인
+print(f"BASE URL: {BASE_URL}")
+print(f"Swagger URL: {SWAGGER_URL}")
 
 # 노래 생성 API 엔드포인트
 @app.route('/generate_song', methods=['POST'])
 def generate_song():
-    # 요청 데이터에서 프롬프트, 태그, 제목 추출
+    # 요청 데이터에서 keywords, style, title 추출
     data = request.get_json()
     
-    prompt = data.get('prompt')
-    tags = data.get('tags')
+    keywords = data.get('keywords')
+    style = data.get('style')
     title = data.get('title')
     
-    if not prompt or not tags or not title:
-        return jsonify({"error": "프롬프트, 태그, 제목이 모두 필요합니다."}), 400
+    if not keywords or not style or not title:
+        return jsonify({"error": "keywords, style, title이 모두 필요합니다."}), 400
     
-    tags = tag_translation(tags)
-
+    style_translated = tag_translation(style)  # 태그(스타일) 번역
+    
     # 오디오 생성 및 URL 반환
-    audio_urls = generate_and_get_audio(prompt, tags, title)
+    audio_urls = generate_and_get_audio(keywords, style_translated, title)
     
     if not audio_urls:
         return jsonify({"error": "오디오 생성 실패"}), 500
@@ -34,7 +41,6 @@ def generate_song():
 @app.route('/generate_lyrics', methods=['POST'])
 def generate_lyrics():
     data = request.get_json()
-
     keyword = data.get('keyword')
 
     if not keyword:
@@ -58,20 +64,20 @@ def download_audio():
     if not audio_url:
         return jsonify({"error": "오디오 URL이 필요합니다."}), 400
 
-    # 오디오 파일 다운로드
-    response = requests.get(audio_url)
-    
+    # 오디오 파일을 스트리밍 방식으로 다운로드
+    response = requests.get(audio_url, stream=True)
+
     if response.status_code == 200:
-        # 파일을 임시로 저장하고 클라이언트에 제공
-        file_name = f"temp_audio_file.mp3"
-        with open(file_name, 'wb') as file:
-            file.write(response.content)
-        
-        # Flask의 send_file을 사용하여 파일을 클라이언트에 전달
-        return send_file(file_name, as_attachment=True)
+        # 파일을 스트리밍 방식으로 클라이언트에 제공
+        return Response(
+            response.iter_content(chunk_size=10 * 1024),  # 10KB씩 스트리밍
+            content_type=response.headers.get('Content-Type', 'application/octet-stream'),
+            headers={'Content-Disposition': 'attachment; filename=temp_audio_file.mp3'}
+        )
     else:
         return jsonify({"error": f"오디오 다운로드 실패: {response.status_code}"}), 500
 
+# 노래 s3에 업로드
 @app.route('/upload_audio', methods=['POST'])
 def upload_audio():
     if 'file' not in request.files:
@@ -82,10 +88,13 @@ def upload_audio():
     if file:
         filename = secure_filename(file.filename)
         file.save(filename)
-    
-        return upload_music(filename)
+
+        # S3에 업로드하고 URL을 받아옴
+        response, status_code = upload_music(filename)
+
+        return jsonify(response), status_code
     else:
-        return jsonify({"error": "File이 존재하지 않습니다."}), 400
+        return jsonify({"error": "File이 존재하지 않습니다. hello world"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
