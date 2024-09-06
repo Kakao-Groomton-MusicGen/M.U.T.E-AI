@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from audio_client import generate_and_get_audio  # 오디오 생성 함수 임포트
-from lyrics_generator import lyrics_composition
+from lyrics_generator import lyrics_composition, tag_translation
 
 app = Flask(__name__)
 
@@ -17,6 +17,8 @@ def generate_song():
     if not prompt or not tags or not title:
         return jsonify({"error": "프롬프트, 태그, 제목이 모두 필요합니다."}), 400
     
+    tags = tag_translation(tags)
+
     # 오디오 생성 및 URL 반환
     audio_urls = generate_and_get_audio(prompt, tags, title)
     
