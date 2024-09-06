@@ -43,7 +43,7 @@ def tag_translation(tag):
     translated_tag = get_translation_from_openai(client, prompt)
     
     # 태그 정리
-    cleaned_tag = translated_tag.replace("'", '')
+    cleaned_tag = 'children song, ' + translated_tag.replace("'", '')
     
     end = time.time()
     print(f"Processing time: {end - start:.5f} sec")
