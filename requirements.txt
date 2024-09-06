@@ -4,3 +4,4 @@ tiktoken
 python-dotenv
 flask
 boto3
+validators
