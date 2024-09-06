@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from audio_client import generate_and_get_audio  # 오디오 생성 함수 임포트
 from lyrics_generator import lyrics_composition, tag_translation
+from music_uploader import upload_music
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
@@ -69,6 +71,21 @@ def download_audio():
         return send_file(file_name, as_attachment=True)
     else:
         return jsonify({"error": f"오디오 다운로드 실패: {response.status_code}"}), 500
+
+@app.route('/upload_audio', methods=['POST'])
+def upload_audio():
+    if 'file' not in request.files:
+        return jsonify({"error": "File이 필요합니다."}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "File 이름이 비어있습니다."}), 400
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(filename)
+    
+        return upload_music(filename)
+    else:
+        return jsonify({"error": "File이 존재하지 않습니다."}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
