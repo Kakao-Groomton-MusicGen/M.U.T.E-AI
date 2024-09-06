@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 
 # .env 파일에서 환경 변수 불러오기
 def set_openai_api_key():
-    """config.env 파일에서 OpenAI API 키 설정"""
-    load_dotenv("config.env")  # .env 파일 로드
+    """.env 파일에서 OpenAI API 키 설정"""
+    load_dotenv(".env")  # .env 파일 로드
     api_key = os.getenv("OPENAI_API_KEY")
     
     if not api_key:

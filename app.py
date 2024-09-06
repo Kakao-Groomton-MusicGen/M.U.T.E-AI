@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from audio_client import generate_and_get_audio  # 오디오 생성 함수 임포트
+from lyrics_generator import lyrics_composition
 
 app = Flask(__name__)
 
@@ -24,6 +25,23 @@ def generate_song():
         return jsonify({"error": "오디오 생성 실패"}), 500
     
     return jsonify({"audio_urls": audio_urls}), 200
+
+# 가사 생성 API 엔드포인트
+@app.route('/generate_lyrics', methods=['POST'])
+def generate_lyrics():
+    data = request.get_json()
+
+    keyword = data.get('keyword')
+
+    if not keyword:
+        return jsonify({"error": "키워드가 필요합니다."}), 400
+
+    lyrics = lyrics_composition(keyword)
+
+    if not lyrics:
+        return jsonify({"error": "가사 생성 실패"}), 500
+
+    return jsonify({"lyrics": lyrics}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
