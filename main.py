@@ -3,8 +3,10 @@ from audio_client import generate_and_get_audio
 
 if __name__ == "__main__":
     # 1. 사용자로부터 키워드를 입력받음
-    keyword = input("가사 키워드 입력: ")  # 키워드만 입력 받음
-    
+    keyword = input("가사 키워드 입력 : ")  # 키워드만 입력 받음
+    tags = input("노래 스타일 입력 : ")
+    title = input("제목 입력 : ")
+
     # 2. 동요 가사 생성
     lyrics = lyrics_composition(keyword)
     print("생성된 가사:\n", lyrics)

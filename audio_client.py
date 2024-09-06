@@ -33,8 +33,11 @@ def get_audio_information(audio_ids):
         return None
 
 # 오디오 상태 체크 및 URL 가져오기 함수
-def check_audio_status(ids, max_attempts=60, delay=2):
+def check_audio_status(ids, max_attempts=60, delay=5):
     """오디오 생성 상태를 주기적으로 체크하여 완료되면 URL 반환"""
+
+    audio_url = []
+
     for _ in range(max_attempts):
         data = get_audio_information(ids)
         
@@ -42,18 +45,22 @@ def check_audio_status(ids, max_attempts=60, delay=2):
         if not data:
             print("Error: 서버로부터 데이터를 받아오지 못했습니다.")
             return None
-        
-        # 리스트로 반환된 경우
-        if isinstance(data, list) and len(data) > 0:
-            first_item = data[0]  # 첫 번째 아이템을 확인
-            if 'status' in first_item and first_item['status'] == 'streaming':
 
-                return first_item['audio_url']
+        if data[0]["status"] == 'streaming' or data[0]["status"] == 'complete':
+            audio_url.append(data[0]['audio_url'])
+            audio_url.append(data[1]['audio_url'])
+            return audio_url
+
+        # # 리스트로 반환된 경우
+        # if isinstance(data, list) and len(data) > 0:
+        #     first_item = data[0]  # 첫 번째 아이템을 확인
+        #     if 'status' in first_item and first_item['status'] == 'streaming':
+        #         return first_item['audio_url']
         
-        # 딕셔너리로 반환된 경우
-        elif isinstance(data, dict) and 'status' in data and data['status'] == 'streaming':
-            print(f"{data['id']} ==> {data['audio_url']}")
-            return data['audio_url']
+        # # 딕셔너리로 반환된 경우
+        # elif isinstance(data, dict) and 'status' in data and data['status'] == 'streaming':
+        #     print(f"{data['id']} ==> {data['audio_url']}")
+        #     return data['audio_url']
         
         time.sleep(delay)
     
@@ -97,17 +104,20 @@ def generate_and_get_audio(prompt, tags, title, make_instrumental=False, wait_au
         print(f"Error: {data['error']}")
         return []
 
-    audio_urls = []
-    
-    # 여러 개의 오디오 파일을 처리
-    for item in data[:2]:  # 2개의 오디오만 처리하도록 제한
-        if isinstance(item, dict) and "id" in item:
-            audio_url = check_audio_status(item['id'])
-            if audio_url:
-                audio_urls.append(audio_url)
-                # 오디오 파일 다운로드
-                download_audio(audio_url, f"{item['id']}.mp3")
-        else:
-            print(f"Unexpected item format or missing 'id': {item}")
+    ids = f"{data[0]['id']},{data[1]['id']}"
+    audio_url = check_audio_status(ids)
+
+    # audio_urls = []    
+
+    # # 여러 개의 오디오 파일을 처리
+    # for item in data[:2]:  # 2개의 오디오만 처리하도록 제한
+    #     if isinstance(item, dict) and "id" in item:
+    #         audio_url = check_audio_status(item['id'])
+    #         if audio_url:
+    #             audio_urls.append(audio_url)
+    #             # 오디오 파일 다운로드
+    #             download_audio(audio_url, f"{item['id']}.mp3")
+    #     else:
+    #         print(f"Unexpected item format or missing 'id': {item}")
     
     return audio_urls
