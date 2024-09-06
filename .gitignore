@@ -1,3 +1,4 @@
 # .gitignore 파일에 추가
 .env
 venv
+__pycache__/
