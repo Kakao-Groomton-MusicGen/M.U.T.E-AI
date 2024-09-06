@@ -1,4 +1,4 @@
-from lyrics_generator import generate_lyrics
+from lyrics_generator import lyrics_composition
 from audio_client import generate_and_get_audio
 
 if __name__ == "__main__":
@@ -6,7 +6,7 @@ if __name__ == "__main__":
     keyword = input("가사 키워드 입력: ")  # 키워드만 입력 받음
     
     # 2. 동요 가사 생성
-    lyrics = generate_lyrics(keyword)
+    lyrics = lyrics_composition(keyword)
     print("생성된 가사:\n", lyrics)
     
     # 3. 태그 및 제목 정의 (필요한 경우 변경 가능)

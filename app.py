@@ -10,7 +10,6 @@ def generate_song():
     # 요청 데이터에서 프롬프트, 태그, 제목 추출
     data = request.get_json()
     
-    # 필수 데이터 확인
     prompt = data.get('prompt')
     tags = data.get('tags')
     title = data.get('title')
@@ -24,6 +23,7 @@ def generate_song():
     if not audio_urls:
         return jsonify({"error": "오디오 생성 실패"}), 500
     
+    # URL만 제공
     return jsonify({"audio_urls": audio_urls}), 200
 
 # 가사 생성 API 엔드포인트
@@ -42,6 +42,31 @@ def generate_lyrics():
         return jsonify({"error": "가사 생성 실패"}), 500
 
     return jsonify({"lyrics": lyrics}), 200
+
+# 오디오 다운로드 API 엔드포인트
+@app.route('/download_audio', methods=['POST'])
+def download_audio():
+    data = request.get_json()
+
+    # 요청 데이터에서 audio_url 추출
+    audio_url = data.get('audio_url')
+
+    if not audio_url:
+        return jsonify({"error": "오디오 URL이 필요합니다."}), 400
+
+    # 오디오 파일 다운로드
+    response = requests.get(audio_url)
+    
+    if response.status_code == 200:
+        # 파일을 임시로 저장하고 클라이언트에 제공
+        file_name = f"temp_audio_file.mp3"
+        with open(file_name, 'wb') as file:
+            file.write(response.content)
+        
+        # Flask의 send_file을 사용하여 파일을 클라이언트에 전달
+        return send_file(file_name, as_attachment=True)
+    else:
+        return jsonify({"error": f"오디오 다운로드 실패: {response.status_code}"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
