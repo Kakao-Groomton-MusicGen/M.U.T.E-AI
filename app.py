@@ -16,14 +16,12 @@ print(f"Swagger URL: {SWAGGER_URL}")
 # 노래 생성 API 엔드포인트
 @app.route('/generate_song', methods=['POST'])
 def generate_song():
-    # 요청 데이터에서 prompt, style, title 추출
-
-    if not data:
-        return jsonify({"error": "Invalid input, JSON expected"}), 400
+    # 요청 데이터에서 keywords, style, title 추출
+    data = request.get_json()
     
-    keywords = data.get("keywords")
-    style = data.get("style")
-    title = data.get("title")
+    keywords = data.get('keywords')
+    style = data.get('style')
+    title = data.get('title')
     
     if not keywords or not style or not title:
         return jsonify({"error": "prompt, tags, title이 모두 필요합니다."}), 400
