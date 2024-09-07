@@ -49,7 +49,9 @@ M.U.T.E는 **Music**(음악), **Understanding**(이해), **Teaching**(가르침)
 - **에러 처리**: 크레딧 부족, 서버 타임아웃 등의 문제를 처리하는 에러 핸들링 기능을 포함합니다.
 
 ## AI 기술 스택
-- 이 프로젝트에서는 다음과 같은 AI 기술 스택을 사용하여 가사와 음악을 생성합니다:
+| **Language** | **LLM**  | **API** | **Model** |
+| -------------- | -------- | ---------------- | ---------------- |
+| ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) | ![Openai](https://img.shields.io/badge/OpenAI-412991.svg?style=for-the-badge&logo=OpenAI&logoColor=white) | ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white) | ![SUNO](https://img.shields.io/badge/Suno-000000.svg?style=for-the-badge&logo=Suno&logoColor=white) |
 
 - **OpenAI GPT-4o mini**: 가사 생성에 사용됩니다. 사용자가 입력한 키워드와 스타일을 바탕으로 자연스러운 가사를 만들어냅니다.
 - **Suno AI 모델:** Suno의 음악 생성 AI API를 활용하여 가사를 기반으로 음악을 만듭니다. 다양한 음악 스타일과 템포를 조정할 수 있는 커스텀 기능을 제공합니다.
